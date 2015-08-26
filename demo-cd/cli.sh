@@ -7,13 +7,15 @@
 # This script builds all required docker images.
 #
 
-build_image {
+function build_image {
   IMAGE=$1
-  echo $IMAGE
+  pushd ../$IMAGE >/dev/null
+  docker build -q --rm -t $IMAGE .
+  popd > /dev/null
 
 }
 
-remove_image {
+function remove_image {
   IMAGE=$1
 
   for IMAGE_ID in $(docker images | grep -w $IMAGE | awk '{ print $3; }')
@@ -39,7 +41,7 @@ remove_image {
   done
 }
 
-remove_container {
+function remove_container {
   CONTAINER_ID=$(docker ps -a | grep $1 | awk '{ print $1; }')
 
   if [ ! -z "$CONTAINER_ID" ]; then
@@ -47,7 +49,7 @@ remove_container {
   fi
 }
 
-stop_container {
+function stop_container {
   CONTAINER_ID=$(docker ps -a | grep $1 | awk '{ print $1; }')
 
   if [ ! -z "$CONTAINER_ID" ]; then
@@ -55,9 +57,9 @@ stop_container {
   fi
 }
 
-start_nexus {
+function start_nexus {
   # If there is no nexus container running
-  if [ ! $( docker ps | grep nexus | wc -l ) -gt 0 ]; then 
+  if [ ! $( docker ps | grep nexus | wc -l ) -gt 0 ]; then
     # If there isn't a stopped container
     if [ ! $( docker ps -a | grep nexus | wc -l ) -gt 0 ]; then
       # Create a new Nexus container
@@ -66,12 +68,12 @@ start_nexus {
       # Start the existing container
       docker start nexus
     fi
-  fi  
+  fi
 }
 
-start_sonar {
+function start_sonar {
   # If there is no Sonar container running
-  if [ ! $( docker ps | grep sonar | wc -l ) -gt 0 ]; then 
+  if [ ! $( docker ps | grep sonar | wc -l ) -gt 0 ]; then
     # If there isn't a stopped container
     if [ ! $( docker ps -a | grep sonar | wc -l ) -gt 0 ]; then
       # Create a new Sonar Container
@@ -83,7 +85,7 @@ start_sonar {
   fi
 }
 
-start_jenkins_ci {
+function start_jenkins_ci {
   if [ ! $( docker ps | grep nexus | wc -l ) -gt 0 ]; then 
     echo "Start a Nexus container first".
     exit 1
