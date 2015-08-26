@@ -5,7 +5,41 @@
 #
 #
 # This script builds all required docker images.
-# 
+#
+
+pushd () {
+        SAVE=`pwd`
+        if [ "$1" = "" ]
+        then    if [ "$DSTACK" = "" ]
+                then    echo "pushd: directory stack empty."
+                        return 1
+                fi
+                set $DSTACK
+                cd $1 || return
+                shift 1
+                DSTACK="$*"
+        else    cd $1 > /dev/null || return
+        fi
+        DSTACK="$SAVE $DSTACK"
+        dirs
+}
+
+popd () {
+        if [ "$DSTACK" = "" ]
+        then    echo "popd: directory stack empty."
+                return 1
+        fi
+        set $DSTACK
+        cd $1
+        shift
+        DSTACK=$*
+        dirs
+}
+
+dirs () {
+        echo "`pwd` $DSTACK"
+        return 0
+}
 
 function build_image { 
   IMAGE=$1
