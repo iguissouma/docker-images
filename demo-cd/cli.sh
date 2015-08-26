@@ -5,20 +5,11 @@
 #
 #
 # This script builds all required docker images.
-# 
+#
 
 function build_image {
-  alias pushd='DIRS="$PWD
-  $DIRS"; cd'
-
-  # This is all one line.
-  alias popd='LINE=`echo "\$DIRS" | sed -ne '1p'`;[ "$LINE" != "" ] && cd
-  $LINE;DIRS=`echo "\$DIRS" | sed -e '1d'`'
-
   IMAGE=$1
-  pushd ../$IMAGE >/dev/null
-  docker build -q --rm -t $IMAGE .
-  popd > /dev/null
+  echo $IMAGE
 
 }
 
