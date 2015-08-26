@@ -7,7 +7,7 @@
 # This script builds all required docker images.
 #
 
-function pushd () {
+function pushd {
         SAVE=`pwd`
         if [ "$1" = "" ]
         then    if [ "$DSTACK" = "" ]
@@ -24,7 +24,7 @@ function pushd () {
         dirs
 }
 
-function popd () {
+function popd {
         if [ "$DSTACK" = "" ]
         then    echo "popd: directory stack empty."
                 return 1
@@ -36,7 +36,7 @@ function popd () {
         dirs
 }
 
-function dirs () {
+function dirs {
         echo "`pwd` $DSTACK"
         return 0
 }
